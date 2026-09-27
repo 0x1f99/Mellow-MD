@@ -6,6 +6,7 @@ export default {
   description: "Reset warn count for a group member",
   category: "Group",
   usage: "Reply to a member or mention them",
+  aliases: ["wr"],
   execute: async (sock, msg, args, mellow = {}) => {
     const { chatID, chatIDisGroup, senderID, ctxInfo } = mellow;
     if (!chatIDisGroup) {
