@@ -1,4 +1,4 @@
-import { getWarns } from "../lib/index.js";
+import { getWarns, isSenderAdmin } from "../lib/index.js";
 import normaliseJidToPN from "../lib/normaliseJidToPN.js";
 
 export default {
@@ -7,24 +7,19 @@ export default {
   category: "Group",
   usage: ".getwarn @user",
   execute: async (sock, msg, args, mellow = {}) => {
-    const { chatID, chatIDisGroup, senderID } = mellow;
+    const { chatID, chatIDisGroup, senderID, ctxInfo } = mellow;
     if (!chatIDisGroup) {
       return sock.sendMessage(chatID, {
         text: "This command only works in groups.",
       });
     }
-    const groupMetadata = await sock.groupMetadata(chatID);
-    const groupAdmins = groupMetadata.participants.filter((p) => p.admin);
-    const sender = await normaliseJidToPN(sock, senderID);
-    const isAdmin = groupAdmins.some((admin) => admin.id === sender);
+    const isAdmin = await isSenderAdmin(sock, senderID, chatID);
     if (!isAdmin) {
       return sock.sendMessage(chatID, { text: "You are not an admin." });
     }
-    let targetJid =
-      msg.message?.extendedTextMessage?.contextInfo?.participant ||
-      msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0];
+    let targetJid = ctxInfo?.participant || ctxInfo?.mentionedJid?.[0];
     if (!targetJid) {
-      return sock.sendMessage(remoteJid, {
+      return sock.sendMessage(chatID, {
         text: "Please mention or reply to a user to get their warnings.",
       });
     }
