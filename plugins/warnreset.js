@@ -1,11 +1,12 @@
-import { getWarns, isSenderAdmin } from "../lib/index.js";
 import normaliseJidToPN from "../lib/normaliseJidToPN.js";
+import { isSenderAdmin, setWarns } from "../lib/index.js";
 
 export default {
-  name: "getwarn",
-  description: "Get the number of warnings a user has",
+  name: "warnreset",
+  description: "Reset warn count for a group member",
   category: "Group",
-  usage: ".getwarn @user",
+  usage: "Reply to a member or mention them",
+  aliases: ["wr"],
   execute: async (sock, msg, args, mellow = {}) => {
     const { chatID, chatIDisGroup, senderID, ctxInfo } = mellow;
     if (!chatIDisGroup) {
@@ -13,23 +14,20 @@ export default {
         text: "This command only works in groups.",
       });
     }
-    const isAdmin = await isSenderAdmin(sock, senderID, chatID);
+    const isAdmin = isSenderAdmin(sock, senderID, chatID);
     if (!isAdmin) {
       return sock.sendMessage(chatID, { text: "You are not an admin." });
     }
     let targetJid = ctxInfo?.participant || ctxInfo?.mentionedJid?.[0];
     if (!targetJid) {
       return sock.sendMessage(chatID, {
-        text: "Please mention or reply to a user to get their warnings.",
+        text: "Please mention a user to warn.",
       });
     }
     targetJid = (await normaliseJidToPN(sock, targetJid)) + "@s.whatsapp.net";
-    const warnCount = await getWarns(chatID, targetJid);
-    if (!warnCount) {
-      return sock.sendMessage(chatID, { text: `@${targetJid.split("@")[0]} has no warnings.`, mentions: [targetJid] });
-    }
-    return sock.sendMessage(chatID, {
-      text: `Warning count for @${targetJid.split("@")[0]}: ${warnCount}`,
+    await setWarns(chatID, targetJid, 0);
+    await sock.sendMessage(chatID, {
+      text: `@${targetJid.split("@")[0]} has had their warn count reset.`,
       mentions: [targetJid],
     });
   },
