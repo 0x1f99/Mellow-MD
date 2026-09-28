@@ -73,7 +73,7 @@ const startBot = async () => {
       const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
       if (shouldReconnect && !isRestarting) {
         isRestarting = true;
-        print("connection", "Reconnecting...")
+        print("connection", "Reconnecting...");
         setTimeout(() => {
           isRestarting = false;
           startBot();
