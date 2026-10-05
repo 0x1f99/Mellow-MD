@@ -24,13 +24,13 @@ export default {
       return youtubeRegex.test(url);
     }
     if (!isYouTubeUrl(url)) {
-      return await sock.sendMessage(remoteJid, {
+      return await sock.sendMessage(chatID, {
         text: "Please provide a valid YouTube video URL.",
       });
     }
     const COOKIE = process.env.YT_COOKIE;
     if (!COOKIE) {
-      return sock.sendMessage(remoteJid, {
+      return sock.sendMessage(chatID, {
         text: "YT_COOKIE environment variable not set",
       });
     }
