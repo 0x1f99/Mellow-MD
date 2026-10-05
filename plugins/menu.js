@@ -15,10 +15,11 @@ export default {
   description: "List all available commands",
   category: "General",
   usage: "menu",
-  execute: async (sock, msg, args) => {
+  execute: async (sock, msg, args, mellow) => {
+    const { chatID, pushname } = mellow;
     const cmds = commandHandler.getCommands() || [];
     if (cmds.length === 0) {
-      await sock.sendMessage(msg.key.remoteJid, { text: "No commands loaded." });
+      await sock.sendMessage(chatID, { text: "No commands loaded." });
       return;
     }
 
@@ -70,7 +71,7 @@ export default {
       "```┏━━━『 MELLOW MD 』━━━\n" +
       "┃★┏━━━━━━━━━━━━━━\n" +
       `┃★┃Prefix: ${process.env.PREFIX || config.prefix}\n` +
-      `┃★┃User: ${process.env.OWNER_NAME || config.OwnerName}\n` +
+      `┃★┃User: ${pushname || "Unknown"}\n` +
       `┃★┃Time: ${time}\n` +
       `┃★┃Day: ${day}\n` +
       `┃★┃Platform: ${process.env.PLATFORM}\n` +
@@ -83,6 +84,6 @@ export default {
 
     const styledText = transform(text, fonts["bold"]);
 
-    await sock.sendMessage(msg.key.remoteJid, { text: styledText });
+    await sock.sendMessage(chatID, { text: styledText });
   },
 };
