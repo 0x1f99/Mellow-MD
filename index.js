@@ -98,6 +98,45 @@ const startBot = async () => {
     }
   });
 
+  sock.ev.on("contacts.update", async (update) => {
+    try {
+      for (const contact of update) {
+        store.saveContact(contact);
+      }
+    } catch (error) {
+      console.error("Error in contacts update handler:", error);
+    }
+  });
+  sock.ev.on("contacts.upsert", async (update) => {
+    try {
+      for (const contact of update) {
+        console.log(contact);
+        store.saveContact(contact);
+      }
+    } catch (error) {
+      print("error", "Error in contacts upsert handler: " + error.message);
+    }
+  });
+
+  sock.ev.on("messaging-history.set", async (update) => {
+    const { messages, contacts} = update
+    try {
+      if (!messages || !contacts) {
+        print("error", "Received messaging history set without messages or contacts");
+        return;
+      }
+      explicitLog(`Received messaging history set with ${messages.length} messages and ${contacts.length} contacts`);
+      for (const message of messages) {
+        await store.saveMessage(message);
+      }
+      for (const contact of contacts) {
+        store.saveContact(contact);
+      }
+    } catch (error) {
+      print("error", "Error in messaging history set handler: " + error.message);
+    }
+  });
+
   return sock;
 };
 
