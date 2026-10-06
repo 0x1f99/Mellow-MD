@@ -1,173 +1,290 @@
-<div align="center">
+<h1 align="center">Mellow MD</h1>
 
-# MELLOW MD
+<p align="center">
+  A self-hosted, multi-device WhatsApp bot built with Node.js and Baileys.
+</p>
 
-</div>
+<p align="center">
+  <a href="https://github.com/0x1f99/Mellow-MD/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-2E8B57?style=for-the-badge" alt="MIT License" />
+  </a>
+  <a href="https://nodejs.org/">
+    <img src="https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=node.js&style=for-the-badge" alt="Node.js 22.13 or later" />
+  </a>
+  <a href="https://github.com/0x1f99/Mellow-MD">
+    <img src="https://img.shields.io/badge/WhatsApp-Baileys-25D366?logo=whatsapp&style=for-the-badge" alt="WhatsApp bot powered by Baileys" />
+  </a>
+</p>
 
-<div align="center">
+Mellow MD connects to WhatsApp using Baileys multi-device authentication and provides a plugin-based set of group, media, utility and owner commands. It runs as a Node.js process on a machine or hosting service you control.
 
-<img src="https://i.ibb.co/fVJQHczm/siGOdOA.jpg" width="280" style="border-radius: 2%; margin: 20px 0;" />
-
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=7B2FF7&center=true&vCenter=true&width=500&lines=Fast+%26+Lightweight+WhatsApp+Bot;Multi-Device+Support;Plugin-Based+Architecture;Easy+to+Deploy+Anywhere" alt="Typing SVG" />
-
-[![Fork](https://img.shields.io/badge/Fork%20Repo-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/DemmyJay-99/Mellow-MD/fork)
-[![Star](https://img.shields.io/badge/Star%20⭐%20Repo-f7c948?style=for-the-badge&logo=github&logoColor=black)](https://github.com/DemmyJay-99/Mellow-MD)
-[![Pair Now](https://img.shields.io/badge/Get%20Session%20ID-7b2ff7?style=for-the-badge&logo=whatsapp&logoColor=white)](https://mellow-md.zone.id/)
-
-</div>
-
-## Table of Contents
-
-- [Requirements](#requirements)
-- [Getting Your Session ID](#getting-your-session-id)
-- [Features](#features)
-- [Configuration](#configuration)
-- [Deployment](#deployment)
-  - [Deploy on Panel](#deploy-on-panel)
-  - [Deploy on VPS or Local Machine](#deploy-on-vps-or-local-machine)
-  - [Deploy on Replit](#deploy-on-replit)
-  - [Deploy on Render](#deploy-on-render)
-- [Disclaimer](#disclaimer)
-- [License](#license)
-- [Support](#support)
-
-## Requirements
-
-- Node.js 22+
-- Yarn
-- Git
-- FFmpeg (for media processing features)
-
-> [!WARNING]
-> Use a dedicated WhatsApp account for the bot. Using your personal number may increase the risk of account restrictions or bans.
-
-## Getting Your Session ID
-
-Visit **[![Pairing Site](https://img.shields.io/badge/Pairing%20Site-7b2ff7?style=for-the-badge&logo=whatsapp&logoColor=white)](https://mellow-md.zone.id/)** to get session ID
----
+> [!CAUTION]
+> Use a dedicated WhatsApp account where possible. WhatsApp may restrict accounts that violate its terms or send unwanted messages. Use the bot responsibly and obtain consent before messaging people or adding the bot to groups.
 
 ## Features
 
-- Antidelete feature to recover deleted messages
-- Fast and lightweight WhatsApp bot built with Baileys
-- Multi-device support without keeping your phone online
-- Plugin-based architecture for easy command management
-- Auto-update feature to keep your bot up-to-date with the latest features and fixes
-- Media downloaders (YouTube, Instagram, TikTok, Facebook, Twitter etc.)
-- Music and lyrics search with Genius API integration
-- File conversion (e.g. media to sticker)
-- Group management tools (e.g. warn system, anti-link)
-- Multi-prefix support
-- Timezone configuration for time-related features
+- Multi-device WhatsApp connection with local session credentials
+- Plugin-based commands for group administration, warnings, welcome/goodbye messages and anti-link moderation
+- Media tools for sticker creation, audio/video conversion, reverse playback and downloaders
+- Utility commands for QR codes, time, lyrics and bot information
+- Optional status automation, always-online presence and update checks
+- SQLite-backed message and contact storage using Node.js's built-in `node:sqlite`
+- Local-time display detected from the host machine, with an optional timezone override
 
-## Configuration
+Command modules are organized under [`src/plugins`](./src/plugins) by category. The registry recursively discovers JavaScript modules in those category folders at startup and the command menu and help output are generated from the registered commands.
 
-Create a `config.env` file in the project root based on `.env.example` and fill in the variables below:
+## Requirements
 
-```env
-SESSION_ID=
-PLATFORM=
-AUTO_UPDATE_BOT=
-REACT_EMOJI=
-GENIUS_API_KEY=
-ALWAYS_ONLINE=
-STICKER_PACKNAME=
-WARN_LIMIT=
-YT_COOKIE=
-PREFIX=
-TIMEZONE=
-EXPLICIT_LOGS=
-MSG_MAX_AGE=
-```
+- Node.js **22.13.0 or newer**
+- npm (or Bun, if preferred)
+- Git
+- FFmpeg and FFprobe for sticker, audio, video and media commands
 
-| Variable           | Description                                                                      |
-| ------------------ | -------------------------------------------------------------------------------- |
-| `SESSION_ID`       | Session ID received after pairing at the pairing site                            |
-| `PLATFORM`         | Label shown in the bot menu (e.g. `Replit`, `VPS`, `Panel`)                      |
-| `AUTO_UPDATE_BOT`  | Set to `true` to enable automatic bot updates                                    |
-| `REACT_EMOJI`      | Emoji the bot reacts with when a command is used (e.g. `✨`)                     |
-| `GENIUS_API_KEY`   | API key from [genius.com](https://genius.com/api-clients) for lyrics features    |
-| `ALWAYS_ONLINE`    | Set to `true` to keep the bot's WhatsApp status always online                    |
-| `STICKER_PACKNAME` | Pack name and author for stickers, separated by a comma — e.g. `packname,author` |
-| `WARN_LIMIT`       | Number of warnings before a group member gets removed                            |
-| `YT_COOKIE`        | Youtube cookie in Netscape format                                                |
-| `PREFIX`           | Prefix for bot commands, separated by a comma — e.g. `!,.`                       |
-| `TIMEZONE`         | Timezone for time-related features (e.g. `Asia/Kolkata`)                         |
-| `EXPLICIT_LOGS`    | Toggle explicit logs (`true/false`)                                              |
-| `MSG_MAX_AGE`      | Max age for stored messages)                                                     |
+The SQLite store uses Node.js's built-in `node:sqlite` module, so no separate SQLite package or native build toolchain is needed.
 
----
-
-## Deployment
-
-### Deploy on Panel
-
-<div align="center">
-
-[![Panel Tutorial](https://img.shields.io/badge/Panel%20Tutorial-f00000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/gm0VcsKGAE4?si=PryYKGYqeaOp3FNT)
-[![Deploy on Optiklink](https://img.shields.io/badge/Optiklink-0e76a8?style=for-the-badge)](https://optiklink.net/)
-[![Deploy on Bot-Hosting Panel](https://img.shields.io/badge/Bot--Hosting.net-7b2ff7?style=for-the-badge&logo=serverless&logoColor=white)](https://bot-hosting.net/?aff=1280297606333071372)
-</div>
-
-1. Visit **[Pairing Site](https://mellow-md.zone.id/)** and pair your WhatsApp number.
-2. Go to the **Deploy** section on the pairing site.
-3. Enter your **Session ID** in the provided field.
-4. Click **Download** to get your custom `index.js` file.
-5. Upload the downloaded `index.js` to your Pterodactyl panel and start the server.
-
----
-
-### Deploy on Render
-
-[![Deploy on Render](https://img.shields.io/badge/Deploy-46e3b7?style=for-the-badge&logo=render&logoColor=black)](https://dashboard.render.com)
-
-1. Create a repository and upload the official **Dockerfile**.
-2. Go to the Render Dashboard and create a new **Web Service**.
-3. Connect your repository and use the **Docker** runtime.
-4. Configure the mandatory environment variables (`SESSION_ID`, `PORT`).
-5. Deploy the service and monitor logs for successful startup.
-
----
-
-### Deploy on VPS or Local Machine
+## Quick start
 
 ```bash
 git clone https://github.com/DemmyJay-99/Mellow-MD.git
 cd Mellow-MD
-npm install -g yarn
-yarn install
-cp .env.example config.env
-# Fill in SESSION_ID and PLATFORM in config.env
+npm install
+```
+
+Create a `config.env` file in the project root and add your configuration. On macOS/Linux, you can start with:
+
+```bash
+touch config.env
+```
+
+On Windows PowerShell:
+
+```powershell
+New-Item config.env
+```
+
+Add these settings to the file:
+
+```env
+SESSION_ID=
+PREFIX=!,.
+PLATFORM=Local
+TIMEZONE=
+FFMPEG_PATH=ffmpeg
+```
+
+Get a session ID from the [Mellow MD pairing site](https://mellow-md.zone.id/) and set it as `SESSION_ID`. Keep session credentials and API keys private; do not commit `config.env` or your session files.
+
+Start the bot:
+
+```bash
 npm start
 ```
 
----
+The bot downloads the session credentials on first startup, validates them and connects to WhatsApp. Session files are stored under `session/`. The SQLite message/contact database is stored at `data/baileys_store.db`; other persistent bot settings are stored in the same `data/` directory.
 
-### Deploy on Replit
+### Install FFmpeg
 
-[![Replit](https://img.shields.io/badge/Replit-f26207?style=for-the-badge&logo=replit&logoColor=white)](https://replit.com/github/DemmyJay-99/Mellow-MD)
+FFmpeg and FFprobe must be executable by the same account that runs the bot.
 
-1. Click **[Deploy on Replit](https://replit.com/github/DemmyJay-99/Mellow-MD)** above, or fork the repo and import it manually.
-2. Add `SESSION_ID` and `PLATFORM` as **Secrets** in the Replit dashboard.
-3. The application will start automatically using the configured workflow.
+- **Windows:** Install a prebuilt FFmpeg package, such as one from [Gyan's FFmpeg builds](https://www.gyan.dev/ffmpeg/builds/) and add its `bin` directory to `PATH`.
+- **macOS:** `brew install ffmpeg`
+- **Debian/Ubuntu:** `sudo apt install ffmpeg`
+- **Other Linux distributions:** Install FFmpeg with the distribution's package manager.
+
+Verify the tools and encoder availability:
+
+```bash
+ffmpeg -version
+ffprobe -version
+ffmpeg -hide_banner -encoders
+```
+
+Sticker commands need `libwebp` and (for animated stickers) `libwebp_anim`; video conversion uses `libx264` and AAC. Set `FFMPEG_PATH` and `FFPROBE_PATH` if the executables are not on `PATH`.
+
+## Configuration
+
+The application loads settings from `config.env`; values supplied directly in the process environment (for example, hosting-provider secrets) take precedence over values in that file.
+
+| Variable                                                        | Purpose                                                                    | Default / behavior                                     |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `SESSION_ID`                                                    | Session ID from the pairing site                                           | Required on first setup                                |
+| `PREFIX`                                                        | Comma-separated command prefixes                                           | `!,.`                                                  |
+| `PLATFORM`                                                      | Platform label shown in the menu                                           | Not set                                                |
+| `TIMEZONE`                                                      | IANA timezone for displayed dates and times, such as `America/Los_Angeles` | Automatically detected from the host                   |
+| `FFMPEG_PATH`                                                   | FFmpeg executable or absolute path                                         | `ffmpeg`                                               |
+| `FFPROBE_PATH`                                                  | Optional FFprobe executable or absolute path                               | `ffprobe` or next to `FFMPEG_PATH` when that is a path |
+| `STICKER_PACKNAME`                                              | Sticker pack name and author, separated by a comma                         | `Mellow MD,Mellow`                                     |
+| `ALWAYS_ONLINE`                                                 | Keep the WhatsApp presence online when connected                           | `false`                                                |
+| `AUTO_UPDATE_BOT`                                               | Allow dependency installation after a Git pull                             | `false`                                                |
+| `EXPLICIT_LOGS`                                                 | Enable additional message/store logs                                       | `false`                                                |
+| `MSG_MAX_AGE`                                                   | Message retention time in milliseconds                                     | `86400000` (one day)                                   |
+| `GENIUS_API_KEY`                                                | Genius API key for lyrics lookup                                           | Required for Genius-backed lyrics                      |
+| `YT_COOKIE`                                                     | YouTube cookies for supported media downloads                              | Not set                                                |
+| `REACT_EMOJI`                                                   | Emoji used for command reactions                                           | `✨`                                                   |
+| `WARN_LIMIT`                                                    | Warning count used by group moderation                                     | `3`                                                    |
+| `OWNER_NAME`                                                    | Owner name shown by bot information                                        | `Mellow`                                               |
+| `BANK_NAME`, `BANK_NUMBER`, `BANK_ACCOUNT_NAME`                 | Optional bank details used by the bot                                      | Not set                                                |
+| `STATUS_DOWNLOAD_JID`, `STATUS_EXCEPT_VIEW`, `STATUS_ONLY_VIEW` | Optional status automation settings                                        | Not set                                                |
+
+When `TIMEZONE` is empty, the bot uses the timezone reported by the machine running Node.js. Set `TIMEZONE` explicitly if the host is configured for UTC or a different timezone than the one you want displayed.
+
+`SESSION_ID` is used to download the initial Baileys credentials into `session/`. Once a valid local session exists, the bot can use those saved credentials on later starts. Do not publish the session ID, session directory or `config.env`.
+
+The update helper runs `git pull` at startup and then once every 24 hours. `AUTO_UPDATE_BOT=true` only enables a `yarn install` when the pulled changes include `package.json` or `yarn.lock`; it does not disable the pull itself. Run the bot from a Git checkout and review this behavior before using it on a deployment where automatic source updates are not wanted.
+
+## Deployment
+
+### VPS or local machine
+
+Follow the [Quick start](#quick-start) steps on a machine that can remain online. To run under PM2 instead of directly in the foreground:
+
+```bash
+npm run start:pm2
+npm run stop
+```
+
+Keep the `config.env`, `session/` and `data/` files private and include them in your backup plan.
+
+### Replit
+
+The repository includes a Replit workflow configured to run `node index.js` with Node.js 24.
+
+1. Import or fork this repository in Replit.
+2. Add `SESSION_ID` and any other private configuration as Replit Secrets.
+3. Install the project dependencies if Replit has not done so automatically:
+
+   ```bash
+   npm install
+   ```
+
+4. Start the configured **Project** workflow.
+
+FFmpeg must be available in the Replit environment for media and sticker features. Use a deployment environment that permits a long-running process and outbound connections.
+
+### Other Node.js hosts
+
+On a VM, container or Node.js hosting service:
+
+1. Provide Node.js 22.13.0 or newer and FFmpeg/FFprobe.
+2. Install dependencies with `npm install`.
+3. Set `SESSION_ID` and other secrets in the host's environment configuration.
+4. Start the process with `npm start`.
+
+The included Dockerfile should be reviewed and adjusted for the target host before use; it currently refers to an external base image and repository setup.
+
+## Project layout
+
+| Path                               | Purpose                                                                     |
+| ---------------------------------- | --------------------------------------------------------------------------- |
+| [`index.js`](./index.js)           | Application entry point and WhatsApp connection                             |
+| [`config.js`](./config.js)         | Environment loading and bot defaults                                        |
+| [`src/plugins`](./src/plugins)     | Command modules grouped by feature; external plugins live under `eplugins/` |
+| [`src/utils`](./src/utils)         | Shared media, database, session, messaging and date/time helpers            |
+| `config.env`                       | Local configuration and secrets; create it in the repository root           |
+| `session/`                         | Baileys multi-file authentication state (created at runtime)                |
+| `data/`                            | SQLite store and persistent group, status, permission and sudo data         |
+| `tmp/`                             | Temporary downloaded media used by message history                          |
+| [`jsconfig.json`](./jsconfig.json) | JavaScript editor and type-checking configuration                           |
+
+### Command inventory
+
+The following command modules are loaded from the source tree. A command may also define aliases in its module. Prefixes default to `!` and `.`; set `PREFIX` to a comma-separated list to override them.
+
+| Category    | Modules                                                                                                                                                                                                                       |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Development | `jid`, `lid`                                                                                                                                                                                                                  |
+| Downloaders | `fb`, `insta`, `play`, `tiktok`, `twitter`, `yta`, `ytv`                                                                                                                                                                      |
+| Fun         | `demorse`, `lyrics`, `morse`                                                                                                                                                                                                  |
+| General     | `help`, `menu`, `ping`, `repo`, `uptime`, `version`                                                                                                                                                                           |
+| Group       | `add`, `addpp`, `antilink`, `demote`, `disable`, `gcdesc`, `gclabel`, `gcname`, `ginfo`, `goodbye`, `gpp`, `invite`, `kick`, `leave`, `mute`, `promote`, `revoke`, `tag`, `unblock`, `unmute`, `warn`, `warnreset`, `welcome` |
+| Maker       | `sticker`, `take`                                                                                                                                                                                                             |
+| Owner       | `allvars`, `antidelete`, `aza`, `block`, `delplugin`, `delsudo`, `delvar`, `enable`, `getsudo`, `getvar`, `getwarn`, `plugin`, `restart`, `rmpp`, `setsudo`, `setvar`, `update`                                               |
+| Tools       | `autostatus`, `delete`, `edit`, `mp3`, `mp4`, `qr`, `reverse`, `time`, `vv`                                                                                                                                                   |
+
+At a high level, the modules cover group moderation and configuration, social-media and YouTube downloads, sticker/media conversion, message utilities, status automation and owner/plugin management. Check each module's `description` and `usage` fields for its exact behavior and arguments. Media downloaders depend on external sites and may stop working when those sites change.
+
+### Group command access
+
+The message handler treats messages sent by the bot account and configured sudo users as owner-level requests. Other users' commands are accepted only in groups where the command has been enabled. Group command access is stored in `data/perms.json`; the `enable` and `disable` commands are intended to manage that per-group allowlist. Commands marked owner-only cannot be enabled for general group use. Ordinary direct-message commands are not enabled by this access check.
+
+Group settings such as anti-link behavior, welcome/goodbye messages and warning counts are stored in `data/group.json`. The anti-link action can be configured to delete, warn or kick; kick/delete behavior requires the bot to have the corresponding group-admin permissions. Status automation settings are stored in `data/status.json`, while sudo users are stored in `data/sudoUserStore.json`.
+
+### Message and media retention
+
+The bot persists message and contact data in `data/baileys_store.db`. Media from stored messages is downloaded to `tmp/media/` so it can be used later by message utilities. Old message records and their associated media are cleaned up on startup and hourly; the default retention is 24 hours and can be changed with `MSG_MAX_AGE` (milliseconds). This is message storage, not a no-storage bot: protect the database, temporary media, backups and host access accordingly. Files under `session/`, `data/` and `tmp/` should not be committed or shared.
+
+### Connection behavior
+
+The bot validates the saved Baileys credentials before connecting. If WhatsApp disconnects for a reason other than logout, it attempts to reconnect after five seconds. A logged-out session is not retried; generate or restore a valid session before restarting. Avoid running multiple instances with the same session.
+
+### Security and privacy
+
+- Use a dedicated WhatsApp account where possible and get consent before adding the bot to groups or contacting people.
+- Treat `SESSION_ID`, `session/`, `config.env`, `data/` and backups as private credentials or user data.
+- The message store contains message text/metadata, contacts and downloaded media. Retention cleanup is not a substitute for access controls or encrypted backups.
+- Owner/sudo access is intended for trusted operators only. Do not add untrusted users as sudo users.
+- Download and update features depend on third-party websites and the configured Git remote; review those integrations before running in production.
+
+### Media requirements
+
+FFmpeg is used by sticker creation, audio extraction and media conversion/reversal. `FFPROBE_PATH` is used by video trimming; it defaults to `ffprobe` on `PATH` or to an `ffprobe` sibling next to `FFMPEG_PATH` when an absolute FFmpeg path is configured. Use an FFmpeg build that includes the encoders needed for the features you plan to use, including `libwebp`/`libwebp_anim` for stickers and `libx264`/AAC for video conversion. Confirm `ffmpeg` and `ffprobe` are available to the same account that runs Node. The YouTube and Twitter downloaders fetch the platform-specific `yt-dlp` binary into `bin/` on first use; the bot needs network access and write permission there.
+
+## Development
+
+Install dependencies and run the configured JavaScript typecheck:
+
+```bash
+npm install
+npm run typecheck
+```
+
+Format the project with:
+
+```bash
+npm run format
+```
+
+`npm test` is currently a placeholder that exits with an error; there is no automated test suite configured yet. `npm run typecheck` runs the configured TypeScript check over the JavaScript project.
+
+## Troubleshooting
+
+### SQLite module is unavailable
+
+Check that the runtime is Node.js 22.13.0 or newer:
+
+```bash
+node --version
+```
+
+The application uses Node's built-in `node:sqlite` module; it does not require `better-sqlite3` or a separate SQLite package.
+Node may print an `ExperimentalWarning` for `node:sqlite` on this runtime; that warning is informational.
+
+### FFmpeg or sticker conversion fails
+
+Confirm both `ffmpeg` and `ffprobe` are available in `PATH`. If FFmpeg is installed elsewhere, set `FFMPEG_PATH` in `config.env`. If FFprobe is not beside that executable or on `PATH`, set `FFPROBE_PATH` as well. Ensure the FFmpeg build includes the `libwebp` encoder and, for animated stickers, `libwebp_anim`.
+
+### WhatsApp session is rejected
+
+Check that `SESSION_ID` is current and that the pairing session is valid. Do not run multiple bot instances using the same session. If re-pairing is necessary, stop the bot and handle the existing session files carefully before connecting again.
+
+### Menu or commands are unavailable
+
+The loader recursively discovers `.js` modules under `src/plugins` and separately loads external modules from `src/plugins/eplugins`. Check startup output for `[SKIP] Failed to load plugin` messages. A module must export a default command object with a `name` and an `execute` function to be registered.
+
+### Bot updates or dependencies behave unexpectedly
+
+The update helper performs `git pull` even when `AUTO_UPDATE_BOT` is unset or `false`; that setting only controls whether it runs `yarn install` after certain pulled dependency-file changes. If you need a fixed deployment, run a reviewed checkout and adjust or disable the automatic pull behavior in the source before deploying.
 
 ## Disclaimer
 
-> [!CAUTION]
-> This project is **not affiliated with WhatsApp Inc.** Use responsibly and within [WhatsApp's Terms of Service](https://www.whatsapp.com/legal/terms-of-service). The developers are not responsible for account bans or misuse.
-
----
-
-## License
-
-[MIT License](LICENSE) · Made with ❤️ by [Mellow](https://github.com/DemmyJay-99)
+Mellow MD is an independent project and is not affiliated with WhatsApp or Meta. You are responsible for complying with WhatsApp's [Terms of Service](https://www.whatsapp.com/legal/terms-of-service), applicable law and the privacy expectations of people you contact.
 
 ## Support
 
-<div align="center">
+- Report bugs or request features through [GitHub Issues](https://github.com/0x1f99/Mellow-MD/issues).
+- The project also references its [Telegram updates channel](https://t.me/mellowmd).
+- Never include session IDs, `config.env`, authentication files, private message databases or downloaded media in an issue or support request.
 
-[![GitHub Repo](https://img.shields.io/badge/GitHub%20Repo-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/DemmyJay-99/Mellow-MD)
-[![YouTube Channel](https://img.shields.io/badge/YouTube%20Channel-f00000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@mellow-w3s)
-[![Telegram Channel](https://img.shields.io/badge/Join%20Telegram%20Channel-25D366?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/mellowmd)
-[![Telegram Group](https://img.shields.io/badge/Join%20Telegram%20Group-25D366?style=for-the-badge&logo=telegram&logoColor=blue)](https://t.me/mellowmdgc)
-</div>
+## License
+
+This project is licensed under the [MIT License](./LICENSE).

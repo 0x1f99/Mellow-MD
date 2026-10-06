@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "esnext",
+    "lib": ["esnext", "dom"],
+    "moduleDetection": "force",
+    /* Modules */
+    "module": "nodenext",
+    "allowJs": true,
+    "checkJs": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "noUncheckedSideEffectImports": true,
+    "maxNodeModuleJsDepth": 0,
+    "types": ["node", "bun"],
+    /* Emit */
+    "noEmit": true,
+    /* Interop Constraints */
+    "isolatedModules": true,
+    /* Type Checking */
+    "strict": true,
+    "noImplicitAny": false,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "useUnknownInCatchVariables": false,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    /* Completeness */
+    "skipLibCheck": true
+  }
+}
